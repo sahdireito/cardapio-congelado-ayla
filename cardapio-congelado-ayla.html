@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio Congelado da Ayla</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap');
+
+  :root{
+    --bg: #FBF8F2;
+    --card: #FFFFFF;
+    --ink: #33302B;
+    --ink-soft: #7A7369;
+    --teal: #4E8B84;
+    --teal-dark: #35625C;
+    --coral: #E98B6F;
+    --sand: #EFE7D8;
+    --line: #E7E0D2;
+    --done-bg: #F1F7F5;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Nunito Sans', sans-serif;
+    padding:32px 16px 80px;
+  }
+
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+  }
+
+  header{
+    text-align:left;
+    margin-bottom:28px;
+  }
+
+  .kicker{
+    font-size:14px;
+    color:var(--teal-dark);
+    font-weight:700;
+    margin-bottom:4px;
+  }
+
+  h1{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:30px;
+    margin:0 0 6px;
+    color:var(--ink);
+    line-height:1.15;
+  }
+
+  .subtitle{
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:0;
+  }
+
+  .progress-card{
+    background:var(--card);
+    border-radius:18px;
+    padding:18px 20px;
+    margin:22px 0 22px;
+    border:1px solid var(--line);
+  }
+
+  .progress-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+
+  .progress-label{
+    font-size:14px;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+
+  .progress-count{
+    font-family:'Fredoka', sans-serif;
+    font-size:22px;
+    color:var(--teal-dark);
+    font-weight:600;
+  }
+
+  .bar-track{
+    width:100%;
+    height:10px;
+    background:var(--sand);
+    border-radius:999px;
+    overflow:hidden;
+  }
+
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--teal), var(--coral));
+    border-radius:999px;
+    width:0%;
+    transition:width .35s ease;
+  }
+
+  .tip-card{
+    background:var(--sand);
+    border-radius:18px;
+    padding:18px 20px;
+    margin-bottom:24px;
+    border:1px solid var(--line);
+  }
+
+  .tip-title{
+    font-family:'Fredoka', sans-serif;
+    font-size:15.5px;
+    font-weight:600;
+    color:var(--teal-dark);
+    margin:0 0 6px;
+  }
+
+  .tip-text{
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.5;
+    margin:0;
+  }
+
+  .protein-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+  }
+
+  @media (max-width:480px){
+    .protein-grid{ grid-template-columns:1fr; }
+  }
+
+  .protein-item{
+    background:var(--card);
+    border-radius:12px;
+    padding:8px 12px;
+    font-size:13px;
+    color:var(--ink);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .protein-item b{
+    color:var(--teal-dark);
+    font-weight:700;
+  }
+
+  .day-group{
+    margin-bottom:22px;
+  }
+
+  .day-title{
+    font-family:'Fredoka', sans-serif;
+    font-size:17px;
+    font-weight:600;
+    color:var(--teal-dark);
+    margin:0 0 10px 2px;
+  }
+
+  .list{
+    background:var(--card);
+    border-radius:16px;
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+
+  .item{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+
+  .item:last-child{
+    border-bottom:none;
+  }
+
+  .item:hover{
+    background:#FAFAF7;
+  }
+
+  .item.done{
+    background:var(--done-bg);
+  }
+
+  .checkbox{
+    flex-shrink:0;
+    width:24px;
+    height:24px;
+    margin-top:2px;
+    border-radius:8px;
+    border:2px solid var(--teal);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .2s ease;
+  }
+
+  .item.done .checkbox{
+    background:var(--teal);
+    border-color:var(--teal);
+  }
+
+  .checkbox svg{
+    width:14px;
+    height:14px;
+    opacity:0;
+    transition:opacity .15s ease;
+  }
+
+  .item.done .checkbox svg{
+    opacity:1;
+  }
+
+  .item-body{
+    flex:1;
+  }
+
+  .item-label{
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    color:var(--coral);
+    margin-bottom:2px;
+  }
+
+  .item.done .item-label{
+    color:var(--ink-soft);
+  }
+
+  .item-text{
+    font-size:15px;
+    color:var(--ink);
+    line-height:1.4;
+  }
+
+  .item.done .item-text{
+    color:var(--ink-soft);
+    text-decoration:line-through;
+    text-decoration-color:var(--ink-soft);
+  }
+
+  .footer-note{
+    text-align:center;
+    margin-top:34px;
+    color:var(--ink-soft);
+    font-size:13.5px;
+  }
+
+  .reset-btn{
+    display:block;
+    margin:26px auto 0;
+    background:none;
+    border:1.5px solid var(--line);
+    color:var(--ink-soft);
+    font-family:'Nunito Sans', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    padding:9px 18px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+
+  .reset-btn:hover{
+    border-color:var(--coral);
+    color:var(--coral);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="kicker">Rio Quente, 6 dias ❄️</div>
+    <h1>Cardápio Congelado da Ayla</h1>
+    <p class="subtitle">Marmitas prontas de almoço e jantar — vai marcando conforme for congelando.</p>
+  </header>
+
+  <div class="progress-card">
+    <div class="progress-top">
+      <span class="progress-label">Marmitas prontas</span>
+      <span class="progress-count"><span id="doneCount">0</span>/<span id="totalCount">0</span></span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" id="barFill"></div>
+    </div>
+  </div>
+
+  <div class="tip-card">
+    <p class="tip-title">❄️ Dica de preparo</p>
+    <p class="tip-text">Monte as marmitas já completas (proteína + legumes + arroz juntos), em vez de congelar cada parte separada. Facilita muito na hora de esquentar durante a viagem.</p>
+  </div>
+
+  <div id="days"></div>
+
+  <div class="tip-card">
+    <p class="tip-title">🫘 Variedade das proteínas na semana</p>
+    <div class="protein-grid">
+      <div class="protein-item"><span>Músculo</span><b>4x</b></div>
+      <div class="protein-item"><span>Carne moída</span><b>3x</b></div>
+      <div class="protein-item"><span>Frango</span><b>4x</b></div>
+      <div class="protein-item"><span>Feijão</span><b>5x</b></div>
+      <div class="protein-item"><span>Molho especial</span><b>1x</b></div>
+      <div class="protein-item"><span>Legumes</span><b>toda semana</b></div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">Desmarcar tudo</button>
+  <p class="footer-note">Comida que ela já conhece, só combinada de outro jeito 💛</p>
+
+</div>
+
+<script>
+const data = [
+  {
+    day: "Domingo",
+    meals: [
+      { label: "Almoço", text: "Músculo desfiado + arroz + feijão + abóbora cabotiá + brócolis" },
+      { label: "Jantar", text: "Frango + batata salsa + cenoura + abobrinha" },
+    ]
+  },
+  {
+    day: "Segunda",
+    meals: [
+      { label: "Almoço", text: "Carne moída + arroz + feijão + beterraba + couve-flor" },
+      { label: "Jantar", text: "Músculo desfiado + purê de batata-doce + vagem + cenoura" },
+    ]
+  },
+  {
+    day: "Terça",
+    meals: [
+      { label: "Almoço", text: "Frango + arroz + lentilha + abóbora + couve" },
+      { label: "Jantar", text: "Carne moída + molho especial + macarrão + brócolis" },
+    ]
+  },
+  {
+    day: "Quarta",
+    meals: [
+      { label: "Almoço", text: "Músculo desfiado + arroz + feijão + batata salsa + espinafre" },
+      { label: "Jantar", text: "Frango + mandioca + cenoura + abobrinha + ervilha" },
+    ]
+  },
+  {
+    day: "Quinta",
+    meals: [
+      { label: "Almoço", text: "Carne moída + arroz + feijão + abóbora + couve-flor + beterraba" },
+      { label: "Jantar", text: "Músculo desfiado + batata-doce + brócolis + chuchu" },
+    ]
+  },
+  {
+    day: "Sexta",
+    meals: [
+      { label: "Almoço", text: "Frango + arroz + feijão + cenoura + abobrinha" },
+      { label: "Jantar", text: "Marmita reserva / refeição que sobrou" },
+    ]
+  },
+];
+
+const daysEl = document.getElementById('days');
+const state = {};
+let idCounter = 0;
+
+data.forEach((day) => {
+  const dayDiv = document.createElement('div');
+  dayDiv.className = 'day-group';
+
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'day-title';
+  titleDiv.textContent = day.day;
+  dayDiv.appendChild(titleDiv);
+
+  const listDiv = document.createElement('div');
+  listDiv.className = 'list';
+
+  day.meals.forEach(meal => {
+    const id = 'item' + (idCounter++);
+    state[id] = false;
+
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'item';
+    itemDiv.id = id;
+    itemDiv.onclick = () => toggle(id);
+
+    itemDiv.innerHTML = `
+      <div class="checkbox">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 13l4 4L19 7" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="item-body">
+        <div class="item-label">${meal.label}</div>
+        <div class="item-text">${meal.text}</div>
+      </div>
+    `;
+
+    listDiv.appendChild(itemDiv);
+  });
+
+  dayDiv.appendChild(listDiv);
+  daysEl.appendChild(dayDiv);
+});
+
+document.getElementById('totalCount').textContent = Object.keys(state).length;
+
+function toggle(id){
+  state[id] = !state[id];
+  document.getElementById(id).classList.toggle('done', state[id]);
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = Object.keys(state).length;
+  const done = Object.values(state).filter(Boolean).length;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('barFill').style.width = (total ? (done/total*100) : 0) + '%';
+}
+
+function resetAll(){
+  Object.keys(state).forEach(id => {
+    state[id] = false;
+    document.getElementById(id).classList.remove('done');
+  });
+  updateProgress();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
